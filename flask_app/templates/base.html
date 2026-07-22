@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SwipeFlix{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <header class="header">
+        <a href="{{ url_for('index') }}" class="logo">
+            <span class="logo-icon">🎬</span>
+            <span class="logo-text">Swipe<span class="accent">Flix</span></span>
+        </a>
+        <p class="tagline">Discover your next favorite movie</p>
+    </header>
+
+    <main class="main">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p>Powered by <a href="https://www.themoviedb.org/" target="_blank">TMDB</a></p>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

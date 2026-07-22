@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}SwipeFlix - {{ genre_name }} Movies{% endblock %}
+
+{% block content %}
+<div class="swipe-container">
+    <div class="swipe-header">
+        <h2 class="genre-title">{{ genre_name }} Movies</h2>
+        <p class="swipe-count">
+            <span id="remaining">{{ swipes_required }}</span> swipes remaining
+        </p>
+    </div>
+    
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+    
+    <div class="card-container" id="cardContainer">
+        <div class="loading">Loading movies...</div>
+    </div>
+    
+    <div class="swipe-actions">
+        <button class="action-btn nope-btn" id="nopeBtn" disabled>
+            <span>✕</span>
+        </button>
+        <div class="action-hint">
+            <span>← →</span>
+            <span>or drag</span>
+        </div>
+        <button class="action-btn like-btn" id="likeBtn" disabled>
+            <span>♥</span>
+        </button>
+    </div>
+    
+    <div class="swipe-stats">
+        <span>❤️ <span id="likedCount">0</span> liked</span>
+        <span>•</span>
+        <span><span id="swipedCount">0</span> / {{ swipes_required }} swiped</span>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/swipe.js') }}"></script>
+<script>
+    const genreId = {{ genre_id }};
+    const swipesRequired = {{ swipes_required }};
+    initSwipe(genreId, swipesRequired);
+</script>
+{% endblock %}

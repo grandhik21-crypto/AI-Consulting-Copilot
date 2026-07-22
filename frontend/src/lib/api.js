@@ -1,4 +1,4 @@
-const API_BASE = "https://ai-consulting-copilot.onrender.com";
+const API_BASE = "https://ai-consulting-copilot.onrender.com/api";
 
 function authHeaders() {
   const token = localStorage.getItem("token");

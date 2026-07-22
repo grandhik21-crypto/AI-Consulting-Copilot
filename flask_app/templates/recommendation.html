@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}SwipeFlix - Your Recommendation{% endblock %}
+
+{% block content %}
+<div class="recommendation-container" id="recommendationContainer">
+    <div class="loading">Finding your perfect match...</div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('recommendationContainer');
+    
+    // Get recommendation data from sessionStorage
+    const recData = sessionStorage.getItem('swipeflix_recommendation');
+    
+    if (!recData) {
+        container.innerHTML = `
+            <div class="no-match">
+                <span class="big-emoji">🤔</span>
+                <h2>No Match Found</h2>
+                <p>We couldn't find your recommendation data. Try starting over!</p>
+                <a href="/" class="btn primary">Try Another Genre</a>
+            </div>
+        `;
+        return;
+    }
+    
+    const data = JSON.parse(recData);
+    const movie = data.recommendation;
+    
+    if (!movie) {
+        container.innerHTML = `
+            <div class="no-match">
+                <span class="big-emoji">🤔</span>
+                <h2>No Match Found</h2>
+                <p>You didn't like any movies this round. Try a different genre or swipe right on some movies!</p>
+                <a href="/" class="btn primary">Try Another Genre</a>
+            </div>
+        `;
+        return;
+    }
+    
+    // Show the recommendation
+    const reviewsHtml = movie.reviews && movie.reviews.length > 0 
+        ? `
+            <div class="reviews-section">
+                <h4>What people say</h4>
+                ${movie.reviews.map(r => `
+                    <div class="review-card">
+                        <div class="review-header">
+                            <span class="review-author">@${r.author}</span>
+                            ${r.rating ? `<span class="review-rating">★ ${r.rating}/10</span>` : ''}
+                        </div>
+                        <p class="review-content">"${r.content}"</p>
+                    </div>
+                `).join('')}
+            </div>
+        `
+        : '';
+    
+    container.innerHTML = `
+        <div class="celebration">
+            <span class="big-emoji">🎉</span>
+            <h2>Your Perfect Match!</h2>
+            <p class="match-subtitle">Based on your ${data.totalLiked} like${data.totalLiked !== 1 ? 's' : ''} in <span class="accent">${data.genreName}</span></p>
+        </div>
+        
+        <div class="rec-card pulse-glow">
+            <div class="rec-poster">
+                ${movie.poster_url 
+                    ? `<img src="${movie.poster_url}" alt="${movie.title}">`
+                    : '<div class="no-poster"><span>🎬</span></div>'
+                }
+                <div class="poster-overlay"></div>
+                <div class="rating-badge">
+                    <span class="star">★</span>
+                    <span>${movie.rating}/10</span>
+                </div>
+                <div class="title-overlay">
+                    <h3>${movie.title}</h3>
+                    <span class="year">${movie.year}</span>
+                </div>
+            </div>
+            
+            <div class="rec-details">
+                <p class="overview">${movie.overview}</p>
+                ${reviewsHtml}
+                <p class="vote-count">${movie.vote_count.toLocaleString()} votes on TMDB</p>
+                
+                <div class="rec-actions">
+                    <a href="/" class="btn secondary">Try Again</a>
+                    <a href="https://www.themoviedb.org/movie/${movie.id}" target="_blank" class="btn primary">View on TMDB →</a>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Clear session data
+    sessionStorage.removeItem('swipeflix_recommendation');
+});
+</script>
+{% endblock %}

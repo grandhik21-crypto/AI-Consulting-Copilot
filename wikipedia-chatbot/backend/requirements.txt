@@ -1,0 +1,13 @@
+# Web framework and server
+fastapi
+uvicorn[standard]
+
+# HTTP client for Wikipedia API calls
+httpx
+
+# Wikipedia page lookups
+wikipedia-api
+
+# Testing
+pytest
+pytest-asyncio

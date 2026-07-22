@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}SwipeFlix - Choose Your Genre{% endblock %}
+
+{% block content %}
+<div class="genre-selection">
+    <h1 class="page-title">What are you in the mood for?</h1>
+    <p class="page-subtitle">Pick a genre to start discovering movies</p>
+    
+    <div class="genre-grid" id="genreGrid">
+        <!-- Genres loaded via JavaScript -->
+        <div class="loading">Loading genres...</div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const GENRE_EMOJIS = {
+    "Action": "💥",
+    "Adventure": "🗺️",
+    "Animation": "🎨",
+    "Comedy": "😂",
+    "Crime": "🔪",
+    "Documentary": "📹",
+    "Drama": "🎭",
+    "Family": "👨‍👩‍👧‍👦",
+    "Fantasy": "🧙",
+    "History": "📜",
+    "Horror": "👻",
+    "Music": "🎵",
+    "Mystery": "🔍",
+    "Romance": "💕",
+    "Science Fiction": "🚀",
+    "TV Movie": "📺",
+    "Thriller": "😱",
+    "War": "⚔️",
+    "Western": "🤠"
+};
+
+async function loadGenres() {
+    const grid = document.getElementById('genreGrid');
+    
+    try {
+        const response = await fetch('/api/genres');
+        const data = await response.json();
+        
+        if (!data.success) {
+            throw new Error(data.error);
+        }
+        
+        grid.innerHTML = data.genres.map(genre => `
+            <a href="/swipe/${genre.id}" class="genre-card">
+                <span class="genre-emoji">${GENRE_EMOJIS[genre.name] || '🎬'}</span>
+                <span class="genre-name">${genre.name}</span>
+            </a>
+        `).join('');
+        
+    } catch (error) {
+        grid.innerHTML = `<div class="error">Failed to load genres: ${error.message}</div>`;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', loadGenres);
+</script>
+{% endblock %}
